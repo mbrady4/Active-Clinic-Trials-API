@@ -10,6 +10,8 @@ flask = "*"
 flask-sqlalchemy = "*"
 python-decouple = "*"
 python-dotenv = "*"
+gunicorn = "*"
+psycopg2 = "*"
 
 [requires]
 python_version = "3.6"
