@@ -55,6 +55,7 @@ def create_api():
 
     @app.route('/dummy_data')
     def dummy_data():
+        DB.create_all()
         study1 = Studies()
         DB.session.add(study1)
         study1.nct_id = 10303
