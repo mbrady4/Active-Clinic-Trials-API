@@ -6,8 +6,8 @@ DB = SQLAlchemy()
 class Studies(DB.Model): 
     """Table containing records for active studies"""
     nct_id = DB.Column(DB.String(20), primary_key=True)
-    start_date = DB.Column(DB.String(20), nullable=True)
-    completion_date = DB.Column(DB.String(20), nullable=True)
+    start_date = DB.Column(DB.String(100), nullable=True)
+    completion_date = DB.Column(DB.String(100), nullable=True)
     study_type = DB.Column(DB.String(20), nullable=True)
     overall_status = DB.Column(DB.String(20), nullable=True)
     brief_title = DB.Column(DB.String(1000), nullable=True)
