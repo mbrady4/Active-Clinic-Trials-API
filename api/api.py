@@ -4,7 +4,7 @@ from decouple import config
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from .models import DB, Studies
-from sqlalchemy import create_engine
+from sqlalchemy import *
 
 
 def create_api():
@@ -26,12 +26,45 @@ def create_api():
         json_list = [i.serialize for i in obs]
         return jsonify(json_list)
     
-    @app.route('/api/v1/studies', methods=['GET'])
+    @app.route('/api/v1/studies/query', methods=['GET'])
     def api_filter():
+        # Get Parameters from request
         query_parameters = request.args
-        phase = query_parameters.get('phase')
 
-        results = Studies.query.filter(Studies.phase == phase).all()
+        phase = query_parameters.get('phase').lower()
+        gender = query_parameters.get('gender').lower()
+        study_type = query_parameters.get('studytype').lower()
+        limit = query_parameters.get('limit')
+
+        # Base Query
+        query = "SELECT * FROM studies WHERE"
+
+        if phase:
+            query += f" lower(phase)='{phase}' AND"
+        if study_type:
+            query += f" lower(study_type)='{study_type}' AND"
+        if gender:
+            query += f" lower(gender)=\'{gender}\' AND"
+        if not (phase or study_type or gender):
+            return 'No Results' #api_all()
+        if not limit:
+            limit = 200
+
+        query = query[:-4] + f" LIMIT {limit};"
+
+        results = Studies.query.from_statement(text(query)).all()
+
+        json_list = [i.serialize for i in results]
+
+        return jsonify(json_list)
+
+    @app.route('/api/v1/studies/search', methods=['GET'])
+    def api_search():
+        term = request.args.get('description')
+        term = term.lower()
+        query = "SELECT * FROM studies WHERE lower(description) LIKE \'%" + term + "%\' LIMIT 200;"
+        print(query)
+        results = Studies.query.from_statement(text(query)).all()
 
         json_list = [i.serialize for i in results]
 

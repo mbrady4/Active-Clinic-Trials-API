@@ -35,7 +35,7 @@ class Studies(DB.Model):
             'study_type': self.study_type,
             'overall_status': self.overall_status,
             'brief_title': self.brief_title,
-            'phase': self.phase, 
+            'phase': self.phase,
             'condition_name': self.condition_name,
             'description': self.description,
             'gender': self.gender,
