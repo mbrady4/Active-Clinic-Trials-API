@@ -12,6 +12,7 @@ python-decouple = "*"
 python-dotenv = "*"
 gunicorn = "*"
 psycopg2 = "*"
+boto3 = "*"
 
 [requires]
 python_version = "3.6"

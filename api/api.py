@@ -1,25 +1,9 @@
+import boto3
+import json
 from decouple import config
 from flask import Flask, request, jsonify
 from .models import DB, Studies
 from sqlalchemy import create_engine
-
-books = [
-    {'id': 0,
-     'title': 'A Fire Upon the Deep',
-     'author': 'Vernor Vinge',
-     'first_sentence': 'The coldsleep itself was dreamless.',
-     'year_published': '1992'},
-    {'id': 1,
-     'title': 'The Ones Who Walk Away From Omelas',
-     'author': 'Ursula K. Le Guin',
-     'first_sentence': 'With a clamor of bells that set the swallows soaring, the Festival of Summer came to the city Omelas, bright-towered by the sea.',
-     'published': '1973'},
-    {'id': 2,
-     'title': 'Dhalgren',
-     'author': 'Samuel R. Delany',
-     'first_sentence': 'to wound the autumnal city.',
-     'published': '1975'}
-]
 
 
 def create_api():
@@ -36,7 +20,7 @@ def create_api():
 
     @app.route('/api/v1/studies/all', methods=['GET'])
     def api_all():
-        obs = Studies.query.all()
+        obs = Studies.query.limit(200).all()
         json_list = [i.serialize for i in obs]
         return jsonify(json_list)
     
@@ -51,34 +35,83 @@ def create_api():
 
         return jsonify(json_list)
 
-
-
-    @app.route('/dummy_data')
-    def dummy_data():
+    @app.route('/import_data')
+    def import_data():
+        DB.drop_all()
         DB.create_all()
-        study1 = Studies()
-        DB.session.add(study1)
-        study1.nct_id = 10303
-        study1.start_date = '9/10/2018'
-        study1.completion_date = '9/10/2020'
-        study1.study_type = 'Clinical'
-        study1.overall_status = 'Recruiting'
-        study1.brief_title = 'Applying immonocology to stage IV melanoma'
-        study1.phase = '2a'
-        DB.session.commit()
 
-        study2 = Studies()
-        DB.session.add(study2)
-        study2.nct_id = 22039
-        study2.start_date = '6/4/2019'
-        study2.completion_date = '11/12/2024'
-        study2.study_type = 'Observational'
-        study2.overall_status = 'Active, not yet recruiting'
-        study2.brief_title = 'Studying the origins of irritable bowel syndrome'
-        study2.phase = '3'
-        DB.session.commit()
+        query_parameters = request.args
+        num = query_parameters.get('arg')
+        file_name = str(num) + '_data.json'
 
-        return 'Dummy Data Added'
+        s3 = boto3.resource('s3')
+        content_object = s3.Object('clf-api', file_name)
+        file_content = content_object.get()['Body'].read().decode('utf-8')
+        json_content = json.loads(file_content)
+
+        num = int(num) * 1000 -1000
+        for i in range(int(num),int(num)+1000,1):
+            trial = json_content[str(i)]
+            instance = Studies()
+            DB.session.add(instance)
+            instance.nct_id = trial['nct_id']
+            instance.start_date = trial['start_date']
+            instance.completion_date = trial['completion_date']
+            instance.study_type = trial['study_type']
+            instance.overall_status = trial['overall_status']
+            instance.brief_title = trial['brief_title']
+            instance.phase = trial['phase']
+            instance.condition_name = trial['condition_name']
+            instance.description = trial['description']
+            instance.gender = trial['gender']
+            instance.minimum_age = trial['minimum_age']
+            instance.maximum_age = trial['maximum_age']
+            instance.healthy_volunteers = trial['healthy_volunteers']
+            instance.sponsor_name = trial['sponsor_name']
+            instance.name = trial['name']
+            instance.phone = trial['phone']
+            instance.email = trial['email']
+            instance.completion_prob = trial['completion_prob']
+            DB.session.commit()
+
+        return f'Data from {file_name} Imported Successfully'
+        
+    @app.route('/init_data')
+    def init_data():
+        DB.drop_all()
+        DB.create_all()
+
+        s3 = boto3.resource('s3')
+        content_object = s3.Object('clf-api', '82_data.json')
+        file_content = content_object.get()['Body'].read().decode('utf-8')
+        json_content = json.loads(file_content)
+        
+        #81655
+        for i in range(81000,81656,1):
+            trial = json_content[str(i)]
+            instance = Studies()
+            DB.session.add(instance)
+            instance.nct_id = trial['nct_id']
+            instance.start_date = trial['start_date']
+            instance.completion_date = trial['completion_date']
+            instance.study_type = trial['study_type']
+            instance.overall_status = trial['overall_status']
+            instance.brief_title = trial['brief_title']
+            instance.phase = trial['phase']
+            instance.condition_name = trial['condition_name']
+            instance.description = trial['description']
+            instance.gender = trial['gender']
+            instance.minimum_age = trial['minimum_age']
+            instance.maximum_age = trial['maximum_age']
+            instance.healthy_volunteers = trial['healthy_volunteers']
+            instance.sponsor_name = trial['sponsor_name']
+            instance.name = trial['name']
+            instance.phone = trial['phone']
+            instance.email = trial['email']
+            instance.completion_prob = trial['completion_prob']
+            DB.session.commit()
+
+        return f'Database initialized and seeded successfully'
 
     return app 
 
