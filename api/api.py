@@ -37,8 +37,6 @@ def create_api():
 
     @app.route('/import_data')
     def import_data():
-        DB.drop_all()
-        DB.create_all()
 
         query_parameters = request.args
         num = query_parameters.get('arg')
