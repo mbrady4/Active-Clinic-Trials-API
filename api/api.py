@@ -44,7 +44,9 @@ def create_api():
         num = query_parameters.get('arg')
         file_name = str(num) + '_data.json'
 
-        s3 = boto3.resource('s3')
+        s3 = boto3.resource('s3',
+                            aws_access_key_id=config('AWS_ACCESS_KEY_ID'),
+                            aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'))
         content_object = s3.Object('clf-api', file_name)
         file_content = content_object.get()['Body'].read().decode('utf-8')
         json_content = json.loads(file_content)
@@ -81,7 +83,9 @@ def create_api():
         DB.drop_all()
         DB.create_all()
 
-        s3 = boto3.resource('s3')
+        s3 = boto3.resource('s3', 
+                            aws_access_key_id=config('AWS_ACCESS_KEY_ID'),
+                            aws_secret_access_key=config('AWS_SECRET_ACCESS_KEY'))
         content_object = s3.Object('clf-api', '82_data.json')
         file_content = content_object.get()['Body'].read().decode('utf-8')
         json_content = json.loads(file_content)
