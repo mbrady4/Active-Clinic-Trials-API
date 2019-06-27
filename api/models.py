@@ -5,7 +5,7 @@ DB = SQLAlchemy()
 
 class Studies(DB.Model): 
     """Table containing records for active studies"""
-    nct_id = DB.Column(DB.BigInteger, primary_key=True)
+    nct_id = DB.Column(DB.String(20), primary_key=True)
     start_date = DB.Column(DB.String(20), nullable=True)
     completion_date = DB.Column(DB.String(20), nullable=True)
     study_type = DB.Column(DB.String(20), nullable=True)
@@ -48,4 +48,4 @@ class Studies(DB.Model):
             'email': self.email,
             'completion_prob': self.completion_prob
         }
-        
+
