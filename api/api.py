@@ -1,7 +1,7 @@
 import boto3
 import json
 from decouple import config
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, CORS
 from .models import DB, Studies
 from sqlalchemy import create_engine
 
@@ -11,6 +11,7 @@ def create_api():
     app.config['DEBUG'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = config('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    CORS(app)
     DB.init_app(app)
 
     @app.route('/')

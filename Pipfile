@@ -13,6 +13,7 @@ python-dotenv = "*"
 gunicorn = "*"
 psycopg2 = "*"
 boto3 = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.6"
