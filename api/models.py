@@ -17,7 +17,7 @@ class Studies(DB.Model):
     gender = DB.Column(DB.String(10), nullable=True)
     minimum_age = DB.Column(DB.String(15), nullable=True)
     maximum_age = DB.Column(DB.String(15), nullable=True)
-    healthy_volunteers = DB.Column(DB.String(5), nullable=True)
+    healthy_volunteers = DB.Column(DB.String(15), nullable=True)
     sponsor_name = DB.Column(DB.String(150), nullable=True)
     name = DB.Column(DB.String(150), nullable=True)
     phone = DB.Column(DB.String(50), nullable=True)
