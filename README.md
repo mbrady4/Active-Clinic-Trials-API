@@ -51,7 +51,7 @@ The following arguments can be passed in any combination to the `https://clinica
 - **limit:** Defaults to 200. User customize the limit by passing an integer as an argument as follows: `limit=20`
 - **status:** Specify the status of the trial with `status=recruiting`. Common arguments are: 'recruiting', 'active, not recruiting', 'not yet recruiting', 'available', 'approved for marketing'
 - **healthy:** Specify whether the returned trials accept healthy volunteers with `healthy=yes`. Available arguments are: 'no', 'yes', 'not provided'
-- **predprob:** Specify a minimum likelihood of a trial reaching completion. Acceptable arguments are floats between 0 and 1, the arguments can be specified as follows `predproba=0.7`
+- **predprob:** Specify a minimum likelihood of a trial reaching completion. Acceptable arguments are floats between 0 and 100, the arguments can be specified as follows `predproba=70.67`
 - **maxage:** Specify the maximum patient age that the trial accepts with `maxage=80`. Acceptable arguments are integers between 0 and 100
 - **minage:** Specify the minimum patient age that the trial accepts with `minage=18`. Acceptable arguments are integers between 0 and 100
 

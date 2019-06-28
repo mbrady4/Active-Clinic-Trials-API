@@ -1,4 +1,3 @@
-import requests
 import json
 from flask import Flask, jsonify, request
 from .models import DB, Studies
@@ -22,13 +21,13 @@ def search(term):
 
 
 def query_filters(query_parameters):
-    phase = query_parameters.get('phase').lower()
-    gender = query_parameters.get('gender').lower()
-    study_type = query_parameters.get('studytype').lower()
+    phase = query_parameters.get('phase')
+    gender = query_parameters.get('gender')
+    study_type = query_parameters.get('studytype')
     limit = query_parameters.get('limit')
-    status = query_parameters.get('status').lower()
-    healthy = query_parameters.get('healthy').lower()
-    threshold = float(query_parameters.get('predproba'))
+    status = query_parameters.get('status')
+    healthy = query_parameters.get('healthy')
+    threshold = query_parameters.get('predproba')
     max_age = query_parameters.get('maxage')
     min_age = query_parameters.get('minage')
 
@@ -36,22 +35,27 @@ def query_filters(query_parameters):
     query = "SELECT * FROM studies WHERE"
 
     if phase:
+        phase = str(phase).lower()
         query += f" lower(phase)='{phase}' AND"
     if study_type:
+        study_type = str(study_type).lower()
         query += f" lower(study_type)='{study_type}' AND"
     if gender:
-        query += f" lower(gender)=\'{gender}\' AND"
+        gender = str(gender).lower()
+        query += f" lower(gender)='{gender}' AND"
     if threshold:
-        query += f" float(completion_prob)>{threshold} AND"
+        query += f" completion_prob>{threshold} AND"
     if status:
-        query += f" lower(overall_status)=\'{status}\' AND"
+        status = str(status).lower()
+        query += f" lower(overall_status)='{status}' AND"
     if healthy:
-        query += f" lower(healthy_volunteers)=\'{healthy}\' AND"
+        healthy = str(healthy).lower()
+        query += f" lower(healthy_volunteers)='{healthy}' AND"
     if max_age:
-        query += f" maximum_age_val<='{max_age} AND"
+        query += f" maximum_age_val<={max_age} AND"
     if min_age:
-        query += f" minimum_age_val<='{min_age} AND"
-    if not (phase or study_type or gender):
+        query += f" minimum_age_val<={min_age} AND"
+    if not (phase or study_type or gender or threshold or status or healthy or max_age or min_age):
         return 'No Results' #api_all()
     if not limit:
         limit = 200
