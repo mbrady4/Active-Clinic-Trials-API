@@ -35,6 +35,11 @@ def create_api():
         gender = query_parameters.get('gender').lower()
         study_type = query_parameters.get('studytype').lower()
         limit = query_parameters.get('limit')
+        status = query_parameters.get('status')
+        healthy = query_parameters.get('healthy')
+        threshold = float(query_parameters.get('predproba'))
+        max_age = query_parameters.get('maxage')
+        min_age = query_parameters.get('minage')
 
         # Base Query
         query = "SELECT * FROM studies WHERE"
@@ -45,6 +50,16 @@ def create_api():
             query += f" lower(study_type)='{study_type}' AND"
         if gender:
             query += f" lower(gender)=\'{gender}\' AND"
+        if threshold:
+            query += f" float(completion_prob)>{threshold} AND"
+        if status:
+            query += f" lower(overall_status)=\'{status}\' AND"
+        if healthy:
+            query += f" lower(healthy_volunteers)=\'{healthy}\' AND"
+        if max_age:
+            query += f" maximum_age_val<='{max_age} AND"
+        if min_age:
+            query += f" minimum_age_val<='{min_age} AND"
         if not (phase or study_type or gender):
             return 'No Results' #api_all()
         if not limit:
@@ -107,6 +122,8 @@ def create_api():
             instance.phone = trial['phone']
             instance.email = trial['email']
             instance.completion_prob = trial['completion_prob']
+            instance.minimum_age_val = trial['minimum_age_val']
+            instance.maximum_age_val = trial['maximum_age_val']
             DB.session.commit()
 
         return f'Data from {file_name} Imported Successfully'
@@ -146,6 +163,8 @@ def create_api():
             instance.phone = trial['phone']
             instance.email = trial['email']
             instance.completion_prob = trial['completion_prob']
+            instance.minimum_age_val = trial['minimum_age_val']
+            instance.maximum_age_val = trial['maximum_age_val']
             DB.session.commit()
 
         return f'Database initialized and seeded successfully'

@@ -23,6 +23,8 @@ class Studies(DB.Model):
     phone = DB.Column(DB.String(500), nullable=True)
     email = DB.Column(DB.String(1000), nullable=True)
     completion_prob = DB.Column(DB.String(10), nullable=True)
+    minimum_age_val = DB.Column(DB.Integer, nullable=True)
+    maximum_age_val = DB.Column(DB.Integer, nullable=True)
 
 
     @property
@@ -46,6 +48,8 @@ class Studies(DB.Model):
             'name': self.name,
             'phone': self.phone,
             'email': self.email,
-            'completion_prob': self.completion_prob
+            'completion_prob': self.completion_prob,
+            'minimum_age_val': self.minimum_age_val,
+            'maximum_age_val': self.maximum_age_val
         }
 
