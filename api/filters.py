@@ -54,7 +54,7 @@ def query_filters(query_parameters):
     if max_age:
         query += f" maximum_age_val<={max_age} AND"
     if min_age:
-        query += f" minimum_age_val<={min_age} AND"
+        query += f" minimum_age_val>={min_age} AND"
     if not (phase or study_type or gender or threshold or status or healthy or max_age or min_age):
         return 'No Results' #api_all()
     if not limit:
